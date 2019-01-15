@@ -82,6 +82,11 @@
                 type: Array,
                 required: true,
             },
+            callbackEnd: {
+                type: Function,
+                required: false,
+                default: null
+            },
         },
         data: function () {
             return {
@@ -141,6 +146,7 @@
                         erd.listenTo(self.$refs.item, function (element) {
                             self.onWindowResize();
                         });
+                        self.executeCallbackEnd();
                     });
                 });
                 window.onload = function() {
@@ -159,6 +165,7 @@
                         erd.listenTo(self.$refs.item, function (element) {
                             self.onWindowResize();
                         });
+                        self.executeCallbackEnd();
                     });
 
                 };
@@ -189,6 +196,12 @@
             }
         },
         methods: {
+            executeCallbackEnd: function() {
+                let callbackFunction = this.callbackEnd;
+                if (callbackFunction && {}.toString.call(callbackFunction) === '[object Function]') {
+                    callbackFunction();
+                }
+            },
             layoutUpdate() {
                 if (this.layout !== undefined) {
                     if (this.layout.length !== this.lastLayoutLength) {

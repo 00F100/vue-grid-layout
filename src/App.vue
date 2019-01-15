@@ -41,6 +41,7 @@
                     :is-mirrored="mirrored"
                     :vertical-compact="true"
                     :use-css-transforms="true"
+                    :callbackEnd="callbackStyle"
             >
                 <grid-item v-for="item in layout" :key="item.i"
                            :x="item.x"
@@ -144,6 +145,9 @@
             this.index = this.layout.length;
         },
         methods: {
+            callbackStyle: function() {
+                console.log('CALLBACK OKOK');
+            },
             clicked: function() {
                 window.alert("CLICK!");
             },
