@@ -82,10 +82,13 @@
                 type: Array,
                 required: true,
             },
-            callbackEnd: {
-                type: Function,
-                required: false,
-                default: null
+            externalBus: {
+                type: Object,
+                required: true
+            },
+            callbackEndEmit: {
+                type: String,
+                required: true
             },
         },
         data: function () {
@@ -127,6 +130,7 @@
             window.removeEventListener("resize", self.onWindowResize)
         },
         mounted: function() {
+            this.executeCallbackEnd();
             this.$nextTick(function () {
                 validateLayout(this.layout);
                 var self = this;
@@ -139,6 +143,7 @@
                     compact(self.layout, self.verticalCompact);
 
                     self.updateHeight();
+                    // self.executeCallbackEnd();
                     self.$nextTick(function () {
                         var erd = elementResizeDetectorMaker({
                             strategy: "scroll" //<- For ultra performance.
@@ -146,7 +151,6 @@
                         erd.listenTo(self.$refs.item, function (element) {
                             self.onWindowResize();
                         });
-                        self.executeCallbackEnd();
                     });
                 });
                 window.onload = function() {
@@ -158,6 +162,7 @@
                     compact(self.layout, self.verticalCompact);
 
                     self.updateHeight();
+                    // self.executeCallbackEnd();
                     self.$nextTick(function () {
                         var erd = elementResizeDetectorMaker({
                             strategy: "scroll" //<- For ultra performance.
@@ -165,9 +170,8 @@
                         erd.listenTo(self.$refs.item, function (element) {
                             self.onWindowResize();
                         });
-                        self.executeCallbackEnd();
                     });
-
+                    // self.executeCallbackEnd();
                 };
             });
         },
@@ -197,9 +201,12 @@
         },
         methods: {
             executeCallbackEnd: function() {
-                let callbackFunction = this.callbackEnd;
-                if (callbackFunction && {}.toString.call(callbackFunction) === '[object Function]') {
-                    callbackFunction();
+                console.log('executeCallbackEnd');
+                console.log(['externalBus', this.externalBus]);
+                console.log(['callbackEndEmit', this.callbackEndEmit]);
+                if (this.externalBus != null && this.callbackEndEmit != null) {
+                    console.log('EMIT executeCallbackEnd');
+                    this.externalBus.$emit(this.callbackEndEmit);
                 }
             },
             layoutUpdate() {

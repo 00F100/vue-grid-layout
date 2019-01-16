@@ -41,7 +41,8 @@
                     :is-mirrored="mirrored"
                     :vertical-compact="true"
                     :use-css-transforms="true"
-                    :callbackEnd="callbackStyle"
+                    :externalBus="externalBus"
+                    :callbackEndEmit="callbackEndEmit"
             >
                 <grid-item v-for="item in layout" :key="item.i"
                            :x="item.x"
@@ -90,6 +91,7 @@
 </template>
 
 <script>
+    import Vue from 'vue';
     import GridItem from './GridItem.vue';
     import GridLayout from './GridLayout.vue';
     //import ResponsiveGridLayout from './ResponsiveGridLayout.vue';
@@ -131,6 +133,8 @@
         },
         data () {
             return {
+                externalBus: new Vue(),
+                callbackEndEmit: 'actionCallbackEndEmit',
                 layout: JSON.parse(JSON.stringify(testLayout)),
                 layout2: JSON.parse(JSON.stringify(testLayout)),
                 draggable: true,
@@ -142,12 +146,13 @@
             }
         },
         mounted: function () {
+            var self = this;
             this.index = this.layout.length;
+            this.externalBus.$on('actionCallbackEndEmit', function() {
+                console.log('actionCallbackEndEmit emit');
+            });
         },
         methods: {
-            callbackStyle: function() {
-                console.log('CALLBACK OKOK');
-            },
             clicked: function() {
                 window.alert("CLICK!");
             },
